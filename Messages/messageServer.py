@@ -2,41 +2,47 @@ import socket
 import threading as th
 import colorama
 
+colorama.init(autoreset=True)
+
 def AcceptConnection():
     while True:
         connection, address = sock.accept()
         th.Thread(target=Connect,args=[connection,address]).start()
 
 def Connect(c, a):
-    print(f"Get connection from {a[0]}.") # check port command
+    u = c.recv(16).decode()
+    newConnectionMessage = f"{colorama.Fore.LIGHTYELLOW_EX} >>> Get connection from {a[0]} as {u}."
+    print(newConnectionMessage) # check port command
+    newConnectionMessage = newConnectionMessage.encode()
     c.send(chat.encode())
     for x in conn_list:
-        x.send(f"{colorama.Fore.LIGHTYELLOW_EX} >>> New connection from: {a}".encode())
+        x.send(newConnectionMessage)
     conn_list.append(c)
-    conn_name.append(a)
-    th.Thread(target=HandleConnection, args=[c,a]).start()
+    th.Thread(target=HandleConnection, args=[c,a,u]).start()
 
-def HandleConnection(c,a):
+def HandleConnection(c,a,u):
+    global chat
     while True:
         try:
-            recv = c.recv(1024)
+            recv = c.recv(512)
+            recvDecode = recv.decode()
+            chat += recvDecode+"\n"
+            print(recvDecode)
+            for x in conn_list:
+                if x == c: continue
+                x.send(recv)
+
         except Exception as e:
-            print(f" Error from {a[0]}: {e}")
-            conn_list.remove(c)
-            conn_name.remove(a)
-        if recv == "exit":
-            print("exit: "+a)
-            conn_list.remove(c)
-            conn_name.remove(a)
-        print(recv.decode())
-        chat += recv.decode()+"n\\"
-        for x in conn_list:
-            x.send(recv)
+            if c in conn_list:
+                conn_list.remove(c)
+            print(f"{colorama.Fore.LIGHTRED_EX} Error from {a[0]}: {e}{colorama.Fore.RESET}")
+            lostConnectionMessage = f"{colorama.Fore.RED} <<< Lost connection from {a} as {u}.{colorama.Fore.RESET}".encode()
+            for x in conn_list:
+                x.send(lostConnectionMessage)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 conn_list = []
-conn_name = []
-chat = ""
+chat = "chat:\n"
 
 sock.bind(("0.0.0.0",4444))
 sock.listen(5)
