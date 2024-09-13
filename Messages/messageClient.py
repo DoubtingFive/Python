@@ -1,7 +1,7 @@
-# not fully working ;((
 import socket
 from threading import *
 from colorama import *
+import time
 
 init(autoreset=True)
 
@@ -18,35 +18,48 @@ except FileNotFoundError:
     f.close()
 
 ip = ipFromFile
-print(f"[IP]: {ip}")
+print(f"{Fore.YELLOW}[IP]: {ip}")
 
 username = input(f"{Fore.YELLOW} - [Username]: ")
 
 def TryToConnect():
+    global sock
     try:
-        print(f"{Fore.LIGHTMAGENTA_EX}Trying to connect...")
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        print(f"{Fore.YELLOW}Trying to connect...")
         sock.connect((ip,4444))
-        # sock.send(username.encode())
+        sock.send(username.encode())
+        recv = sock.recv(8196)
+        print(recv.decode())
     except Exception as e:
-        print(f"{Fore.RED}[Error] {e}")
+        print(f"{Fore.RED}[Error TryToConnect()] {Fore.LIGHTRED_EX}{e}")
+        time.sleep(2)
         TryToConnect()
     Thread(target=Recive).start()
-    Thread(target=Send).start()
+    Send()
 
 def Recive():
+    global sock
     while True:
-        recv = sock.recv(1024).decode()
-        # recvaddr = recv[recv.find('(')+2:recv.find(',')-1]
-        # recvport =  recv[recv.find(',')+2:recv.find(')')]
-        print(recv)
+        try:
+            recv = sock.recv(512)
+            print(recv.decode())
+        except Exception as e:
+            print(f"{Fore.RED}[Error Recive()] {Fore.LIGHTRED_EX}{e}")
+            TryToConnect()
 
 def Send():
+    global sock
     while True:
-        msg = input()
-        if msg == "exit":
-            sock.close()
-            exit()
-        sock.send(f"{username} > {msg}".encode())
+        try:
+            msg = input()
+            sock.send(f"{username} > {msg}".encode())
+            if msg == "exit":
+                sock.close()
+                exit()
+        except Exception as e:
+            print(f"{Fore.RED}[Error Send()] {Fore.LIGHTRED_EX}{e}")
+            TryToConnect()
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 TryToConnect()
