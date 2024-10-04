@@ -25,9 +25,6 @@ gameoverTextWidth = gameoverTextSurface.get_width()/2
 gameoverTextHeight = gameoverTextSurface.get_height()/2
 
 textFont = pygame.font.SysFont('impact', 80)
-scoreTextSurface = textFont.render('Game Over', False, colors[4])
-scoreTextWidth = scoreTextSurface.get_width()/2
-scoreTextHeight = scoreTextSurface.get_height()/2
 
 y = 100
 vY = 0
