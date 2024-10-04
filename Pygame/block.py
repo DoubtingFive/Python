@@ -30,10 +30,10 @@ def Obstacle():
     global isGame
     global score
     score += 1
-    x = random.randint(0,3)
-    if x == 0:
+    x = random.randint(0,4)
+    if x <= 1:
         obstacles.append([leftSide,0,colors[2],0,True])
-    if x == 1:
+    elif x >= 3:
         obstacles.append([rightSide,0,colors[3],0,False])
     obstaclesRem = []
     leftDanger = False
