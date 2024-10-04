@@ -6,11 +6,13 @@ screenX = 1280
 screenY = 720
 screen = display.set_mode((screenX, screenY))
 
+blockY = (screenY/4)*3-50
+
 font.init()
 text_font = font.SysFont('impact', 80)
 
-leftSide = screenX/4-50
-rightSide = (screenX/4)*3-50
+leftSide = (screenX/8)*3-50
+rightSide = (screenX/8)*5-50
 
 clock = time.Clock()
 running = True
@@ -65,10 +67,10 @@ while running:
         if e.type == QUIT:
             running = False
         if e.type == KEYDOWN:
-            if e.key == K_LEFT:
+            if e.key == K_LEFT or e.key == K_a or e.key == K_s:
                 isLeft = True
                 Obstacle()
-            if e.key == K_RIGHT:
+            if e.key == K_RIGHT or e.key == K_l or e.key == K_k:
                 isLeft = False
                 Obstacle()
 
@@ -76,11 +78,11 @@ while running:
     for x in obstacles:
         draw.rect(screen,x[2],Rect(x[0],x[1]-50,50,50))
     if isLeft:
-        draw.rect(screen,colors[1],Rect(leftSide,(screenY/4)*3-50,50,50))
+        draw.rect(screen,colors[1],Rect(leftSide,blockY,50,50))
         if leftDanger and isGame:
             Reset()
     else:
-        draw.rect(screen,colors[1],Rect(rightSide,(screenY/4)*3-50,50,50))
+        draw.rect(screen,colors[1],Rect(rightSide,blockY,50,50))
         if rightDanger and isGame:
             Reset()
     text_surface = text_font.render(str(score), False, colors[1])
