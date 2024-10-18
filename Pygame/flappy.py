@@ -56,6 +56,7 @@ while running:
                 isGame = True
                 obstacles = []
                 score = 0
+                isText = False
     screen.fill(colors[0])
     # is game or gameover
     if isGame:
