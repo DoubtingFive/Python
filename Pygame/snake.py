@@ -74,7 +74,7 @@ while running:
     pygame.draw.rect(screen,"darkgreen",pygame.Rect(size[0][0]+snakeSize*0.30,size[0][1]+snakeSize*0.5,snakeSize*0.1,snakeSize*0.1))
     pygame.draw.rect(screen,"darkgreen",pygame.Rect(size[0][0]+snakeSize*0.70,size[0][1]+snakeSize*0.5,snakeSize*0.1,snakeSize*0.1))
     for x in size[1::]:
-        pygame.draw.rect(screen,"green",pygame.Rect(x[0]+5,x[1]+5,snakeSize-10,snakeSize-10))
+        pygame.draw.rect(screen,"green",pygame.Rect(x[0]+snakeSize*0.1,x[1]+snakeSize*0.1,snakeSize*0.2,snakeSize*0.2))
     
     if tick < 0:
         if dirFuture and dir:
